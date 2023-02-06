@@ -48,6 +48,17 @@
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
+  'pixinvent/vuexy-laravel-bootstrap-jetstream' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Pixinvent\\Jetstrap\\JetstrapServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Jetstrap' => 'Pixinvent\\Jetstrap\\JetstrapFacade',
+    ),
+  ),
   'spatie/laravel-ignition' => 
   array (
     'providers' => 
