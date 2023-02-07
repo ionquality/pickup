@@ -86,21 +86,21 @@
 
 
 
-    function createAgreementTemplate() {
-      var form = $('#createAgreementTemplate')[0];
+    function createPickup() {
+      var form = $('#createPickup')[0];
       var formData = new FormData(form);
       $("#modal-info").hide();
       $("#loading_message_modal").fadeIn();
       $.ajax({
         type: "POST",
-        url: '/agreement-template-create',
+        url: '/pickup-create',
         processData: false,
         contentType: false,
         data: formData,
         success: function (data) {
           $('#utility-modal').modal('hide');
           toastr.success(data.msg);
-          getAgreementTemplateList()
+          getPickupList()
         },
         error: function (xhr) {// Error...
           $.each(xhr.responseJSON.errors, function (key, value) {

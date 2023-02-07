@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Pickup;
 use App\Services\Pickup\PickupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -89,24 +90,22 @@ class PickupController extends Controller
             'route_id' => 'required',
             'pickup_date' => 'required',
         ]);
+        $count = Pickup::count();
+        $count ++;
+        $pickup_seq = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->where('CUSTOMER.cu_active','Y')
+            ->where('pickuplist.complete','N')
+            ->where('pickuplist.visible','Y')
+            ->where('pickuplist.route_id', $request->input('route_id'))
+            ->count();
+        $pickup_seq++;
+        $request["seqno"] = $count;
+        $request["pickup_seqno"] = $pickup_seq;
+        $pickup = Pickup::create($request->all());
 
-        $agreementTemplate = AgreementTemplate::find($request->input('agreement_template_id'));
-        $agreementArray = $agreementTemplate->toArray();
-        $requestArray = array_merge($request->all(), $agreementArray);
 
-        if ($agreementTemplate){
-            $agreement = Agreement::create($requestArray);
-            $uniqueId = Helper::quickRandomString(16);
-            $agreementSearch = Agreement::where('unique_id', $uniqueId)->first();
-            while ($agreementSearch){
-                $uniqueId = Helper::quickRandomString(16);
-                $agreementSearch = Agreement::where('unique_id', $uniqueId)->first();
-            }
-            $agreement->update(['unique_id' => $uniqueId]);
-        }
-
-        $msg = 'Agreement: '.$agreement->name.' Has Been Added To User';
-        Helper::insertLog(now(), 'Agreements', $msg, Auth::user()->id, 'agreement-template-list');
+        $msg = 'Customer: '.$pickup->cu_name.' Has Been Added To Pickup List';
+        //Helper::insertLog(now(), 'Agreements', $msg, Auth::user()->id, 'agreement-template-list');
         return response()->json(array('msg' => $msg), 200);
     }
     /**

@@ -91,7 +91,10 @@ class PickupService
         $html .= '<div class="mb-2"><label>Comments</label><textarea class="form-control" name="comments"></textarea></div>';
 
         $html .= '<input type="hidden" name="_token" id="csrf-token" value="' . csrf_token() . '" >';
-        $html .= '<input type="hidden" name="created_by" value="'.Auth::user()->id.'">';
+        $html .= '<input type="hidden" name="complete" value="N">';
+        $html .= '<input type="hidden" name="visible" value="Y">';
+        $html .= '<input type="hidden" name="entry_date" value="'.now().'">';
+        $html .= '<input type="hidden" name="op_id" value="'.Auth::user()->op_id.'">';
         $html .= '<button type="button" class="btn btn-primary" onclick="createPickup()">Create</button>';
         $html .= '</form>';
 

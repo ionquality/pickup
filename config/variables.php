@@ -1,10 +1,10 @@
 <?php
   // Variables
   return [
-    "creatorName" => "Pixinvent",
-    "creatorUrl" => "https://pixinvent.com",
-    "templateName" => "Vuexy",
-    "templateSuffix" => "Bootstrap Admin Template",
+    "creatorName" => "AST",
+    "creatorUrl" => "https://ccuratesteeltreating.com",
+    "templateName" => "Pickup List",
+    "templateSuffix" => "Pickup List",
     "templateVersion" => "1.0.0",
     "templateFree" => false,
     "templateDescription" => "Start your development with a Dashboard for Bootstrap 5",
