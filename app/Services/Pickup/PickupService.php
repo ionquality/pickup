@@ -47,6 +47,40 @@ class PickupService
     }
 
     /**
+     * Build List of pickups for the driver
+     *
+     * @group Pickup
+     * @return string
+     */
+    public function buildPickupDriverList($route_id){
+
+        $pickups = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->where('CUSTOMER.cu_active','Y')
+            ->where('route_id',$route_id)
+            ->where('pickuplist.complete','N')
+            ->where('pickuplist.visible','Y')->get();
+        $html = '<h3>Driver '.$route_id.'</h3>';
+        $html .= '<div class="table-responsive"><table id="datatable" class="table">';
+        $html .= '<thead><tr class="table-primary">';
+        $html .= '<th>Route</th><th>Customer</th><th>Location</th><th>Comments</th><th>Pickup Date</th><th>Complete</th></tr></thead>';
+        foreach ($pickups as $pickup){
+            $pickupCustomer = Customer::select('cu_name','cu_region','cu_address_1','cu_address_2','cu_city','cu_state','cu_zip')
+                ->where('cu_name',$pickup->cu_name)->first();
+
+            $html .= '<tr>';
+            $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
+            $html .= '<td>'.Helpers::getCustomerAddress($pickupCustomer).'</td><td>'.$pickup->comments.'</td>';
+            $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
+            $html .= '<td></td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table></div>';
+
+        return $html;
+    }
+
+    /**
      * Build Agreement Template Create Form
      *
      * @group Agreements

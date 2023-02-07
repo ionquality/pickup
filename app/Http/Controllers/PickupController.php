@@ -16,9 +16,9 @@ class PickupController extends Controller
         $this->middleware('auth');
     }
     /**
-     * Show the agreement view
+     * Show the pickup view
      *
-     * Database used: agreements
+     * Database used: pickuplist
      *
      * @group Agreements
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -33,6 +33,30 @@ class PickupController extends Controller
         ];
 
         return view('/content/pages/pickup/pickupList', [
+            'pageConfigs' => $pageConfigs,
+            'breadcrumbs' => $breadcrumbs
+        ]);
+
+    }
+
+    /**
+     * Show the pickup driver view
+     *
+     * Database used: pickuplist
+     *
+     * @group Agreements
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function driverView()
+    {
+        $breadcrumbs = [
+            ['link' => "home", 'name' => "Home"], ['name' => "Drivers"]
+        ];
+        $pageConfigs = [
+            'pageHeader' => true
+        ];
+
+        return view('/content/pages/pickup/driver', [
             'pageConfigs' => $pageConfigs,
             'breadcrumbs' => $breadcrumbs
         ]);
@@ -60,6 +84,18 @@ class PickupController extends Controller
      */
     public function index() {
         return app()->make(PickupService::class)->buildPickupList();
+    }
+
+    /**
+     * Show the list of pickups for a driver
+     *
+     * Database used: pickuplist
+     *
+     * @group Pickup
+     * @return void
+     */
+    public function driverIndex(Request $request) {
+        return app()->make(PickupService::class)->buildPickupDriverList($request->input('route_id'));
     }
     /**
      * Show the pickup create form

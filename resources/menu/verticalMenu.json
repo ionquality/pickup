@@ -12,32 +12,32 @@
       "slug": "dashboard",
       "submenu": [
         {
-          "url": "/pickup-driver?route_id=2",
+          "url": "/pickup-driver-view?route_id=2",
           "name": "Driver 2",
           "slug": "dashboard-analytics"
         },
         {
-          "url": "/pickup-driver?route_id=3",
+          "url": "/pickup-driver-view?route_id=3",
           "name": "Driver 3",
           "slug": "dashboard-crm"
         },
         {
-          "url": "/pickup-driver?route_id=4",
+          "url": "/pickup-driver-view?route_id=4",
           "name": "Driver 4",
           "slug": "dashboard-ecommerce"
         },
         {
-          "url": "/pickup-driver?route_id=5",
+          "url": "/pickup-driver-view?route_id=5",
           "name": "Driver 5",
           "slug": "dashboard-ecommerce"
         },
         {
-          "url": "/pickup-driver?route_id=6",
+          "url": "/pickup-driver-view?route_id=6",
           "name": "Driver 6",
           "slug": "dashboard-ecommerce"
         },
         {
-          "url": "/pickup-driver?route_id=8",
+          "url": "/pickup-driver-view?route_id=8",
           "name": "Driver 8",
           "slug": "dashboard-ecommerce"
         }
