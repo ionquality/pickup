@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PickupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,3 +26,17 @@ Route::get('/pages/misc-error', $controller_path . '\pages\MiscError@index')->na
 // authentication
 Route::get('/auth/login-basic', $controller_path . '\authentications\LoginBasic@index')->name('auth-login-basic');
 Route::get('/auth/register-basic', $controller_path . '\authentications\RegisterBasic@index')->name('auth-register-basic');
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+
+Route::get('/pickup-list-view', [PickupController::class,'view']);
+Route::get('/pickup-list', [PickupController::class,'index']);
+
