@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home2/accurate/pickup
+    - export DEPLOYPATH=/home2/accurate/public_html/pickup
     - /bin/cp -r * $DEPLOYPATH #copy all from root
