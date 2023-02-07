@@ -8,6 +8,7 @@ class Pickup extends Model
 {
     protected $table = 'pickuplist';
     protected $primaryKey = 'pickup_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'cu_name',

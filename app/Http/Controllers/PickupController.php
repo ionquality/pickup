@@ -12,7 +12,7 @@ class PickupController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
     /**
      * Show the agreement view
@@ -61,40 +61,33 @@ class PickupController extends Controller
         return app()->make(PickupService::class)->buildPickupList();
     }
     /**
-     * Show the agreement create form for consultants
+     * Show the pickup create form
      *
-     * Database used: agreements
+     * Database used: pickuplist
      *
-     * @group Agreements
+     * @group Pickups
      * @return void
      */
-    public function createConsultant(Consultant $consultant) {
-        return app()->make(AgreementService::class)->buildAgreementConsultantForm($consultant);
+    public function create(Request $request) {
+        $cu_name = $request->input('cu_name');
+        return app()->make(PickupService::class)->buildPickupCreateForm($cu_name);
     }
 
+
     /**
-     * Show the agreement email form
+     * save the pickup in the database
      *
-     * Database used: agreements
+     * Database used: pickuplist
      *
-     * @group Agreements
-     * @return void
-     */
-    public function emailView(Agreement $agreement, Consultant $consultant) {
-        return app()->make(AgreementService::class)->buildAgreementEmailForm($agreement, $consultant);
-    }
-    /**
-     * save the agreement in the database
-     *
-     * Database used: agreements
-     *
-     * @group Agreements
+     * @group Pickups
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'agreement_template_id' => 'required',
+            'cu_name' => 'required',
+            'route_id' => 'required',
+            'pickup_date' => 'required',
         ]);
 
         $agreementTemplate = AgreementTemplate::find($request->input('agreement_template_id'));

@@ -39,4 +39,6 @@ Route::middleware([
 
 Route::get('/pickup-list-view', [PickupController::class,'view']);
 Route::get('/pickup-list', [PickupController::class,'index']);
+Route::get('/pickup-create', [PickupController::class,'create']);
+Route::post('/pickup-create', [PickupController::class,'store']);
 

@@ -4,7 +4,9 @@ namespace App\Services\Pickup;
 
 
 use App\Helpers\Helpers;
+use App\Models\Customer;
 use App\Models\Pickup;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +30,7 @@ class PickupService
             ->where('CUSTOMER.cu_active','Y')
             ->where('pickuplist.complete','N')
             ->where('pickuplist.visible','Y')->get();
-        $html = '<button class="btn btn-primary mb-2" type="button" onclick="createAgreementTemplateForm()">Add Pickup</button>';
+        $html = '<button class="btn btn-primary mb-2" type="button" onclick="createPickupForm()">Add Pickup</button>';
         $html .= '<div class="table-responsive"><table id="datatable" class="table">';
         $html .= '<thead><tr class="table-primary">';
         $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th></tr></thead>';
@@ -50,29 +52,47 @@ class PickupService
      * @group Agreements
      * @return string
      */
-    public function buildAgreementTemplateCreateForm(){
-        $countries = ["USA", "Canada", "UK", "Mexico", "Italy"];
-        $types = ["Consultant", "Auditor", "Employee"];
-        $html = '<h3 class="text-primary">Create Agreement Template</h3>';
-        $html .= '<form id="createAgreementTemplate">';
-        $html .= '<div class="mb-1"><label>Name</label><input class="form-control" name="name"></div>';
-        $html .= '<div class="mb-1"><label>Country</label><select class="form-control" name="country"><option value="">Select One</option>';
-        foreach ($countries as $country){
-            $html .= '<option>'.$country.'</option>';
+    public function buildPickupCreateForm($cu_name = null){
+        $customers = Customer::select('cu_name')->where('cu_active','Y')->orderBy('cu_name')->get();
+        $pickupCustomer = Customer::select('cu_name','cu_region','cu_address_1','cu_address_2','cu_city','cu_state','cu_zip')->where('cu_name',$cu_name)->first();
+        $routes = ["2", "3", "4", "5", "6" , "8"];
+        $html = '<h3 class="text-primary">Add Pickup</h3>';
+        $html .= '<form id="createPickup">';
+        $html .= '<div class="mb-2"><label>Customer</label><select class="form-control" id="customer-select" name="cu_name">';
+        if ($cu_name){
+            $html .= '<option>'.$cu_name.'</option>';
+        } else {
+            $html .= '<option value="">Select One</option>';
+        }
+
+        foreach ($customers as $customer){
+            $html .= '<option>'.$customer->cu_name.'</option>';
         }
         $html .= '</select></div>';
-        $html .= '<div class="mb-1"><label>Type</label><select class="form-control" name="type"><option value="">Select One</option>';
-        foreach ($types as $type){
-            $html .= '<option>'.$type.'</option>';
+
+        if ($pickupCustomer){
+            $html .= '<p>Customer: '.$pickupCustomer->cu_name.'</p>';
+            $html .= '<p>Address: '.Helpers::getCustomerAddress($pickupCustomer).'</p>';
+            $html .= '<p>Route: '.$pickupCustomer->cu_region.'</p>';
+        }
+        $html .= '<div class="mb-2"><label>Route</label><select class="form-control" name="route_id">';
+        if ($pickupCustomer){
+            $html .= '<option>'.$pickupCustomer->cu_region.'</option>';
+
+        } else {
+            $html .= '<option value="">Select One</option>';
+
+        }
+        foreach ($routes as $route){
+            $html .= '<option>'.$route.'</option>';
         }
         $html .= '</select></div>';
-        $html .= '<div class="mb-1"><label>Initial Percentage</label><input class="form-control" name="initial_commission_percent"></div>';
-        $html .= '<div class="mb-1"><label>Residual Percentage</label><input class="form-control" name="residual_commission_percent"></div>';
-        $html .= '<div class="mb-1"><label>Agreement Text</label><textarea class="form-control" name="description"></textarea></div>';
+        $html .= '<div class="mb-2"><label>Pickup Date</label><input type="date" class="form-control" name="pickup_date" value="'.Carbon::now()->toDateString().'"></div>';
+        $html .= '<div class="mb-2"><label>Comments</label><textarea class="form-control" name="comments"></textarea></div>';
 
         $html .= '<input type="hidden" name="_token" id="csrf-token" value="' . csrf_token() . '" >';
         $html .= '<input type="hidden" name="created_by" value="'.Auth::user()->id.'">';
-        $html .= '<button type="button" class="btn btn-primary" onclick="tinyMCE.triggerSave();createAgreementTemplate()">Create</button>';
+        $html .= '<button type="button" class="btn btn-primary" onclick="createPickup()">Create</button>';
         $html .= '</form>';
 
         return $html;

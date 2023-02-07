@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Customer;
 use Config;
 use Illuminate\Support\Str;
 
@@ -43,6 +44,14 @@ class Helpers
 
 
         return $return_date;
+
+    }
+
+    public static function getCustomerAddress(Customer $customer)
+    {
+        $address = $customer->cu_address_1 . ' ' . $customer->cu_address_2 . ', ' . $customer->cu_city . ', ' . $customer->cu_state . ', ' . $customer->cu_zip;
+
+        return $address;
 
     }
 

@@ -61,19 +61,24 @@
         }
       });
     }
-    function createAgreementTemplateForm() {
+    function createPickupForm(customer) {
       $('#utility-modal').modal('show');
       $("#loading_message_modal").fadeIn();
       $("#modal-info").hide();
       $.ajax({
-        url: "/agreement-template-create/",
+        url: "/pickup-create/",
         data: {
-          _token: "{{csrf_token()}}"
+          _token: "{{csrf_token()}}",
+          cu_name: customer
         },
         success: function (data) {
           $("#loading_message_modal").fadeOut('slow', function () {
             $("#modal-info").html(data).fadeIn();
-            loadTiny();
+            $('#customer-select').on('change', function(e) {
+              var customer = $(this).val();
+              createPickupForm(customer)
+
+            });
           })
         }
       });
