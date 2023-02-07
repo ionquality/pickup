@@ -3,6 +3,8 @@
 namespace App\Services\Pickup;
 
 
+use App\Helpers\Helpers;
+use App\Models\Pickup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,25 +22,25 @@ class PickupService
      * @return string
      */
     public function buildPickupList(){
-        $html = '<h3>Testing Pickup</h3>';
 
-        /*$agreements = AgreementTemplate::orderBy('name')->get();
-        $html = '<button class="btn btn-primary" type="button" onclick="createAgreementTemplateForm()">Create Agreement Template</button>';
+        $pickups = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->where('CUSTOMER.cu_active','Y')
+            ->where('pickuplist.complete','N')
+            ->where('pickuplist.visible','Y')->get();
+        $html = '<button class="btn btn-primary mb-2" type="button" onclick="createAgreementTemplateForm()">Add Pickup</button>';
         $html .= '<div class="table-responsive"><table id="datatable" class="table">';
         $html .= '<thead><tr class="table-primary">';
-        $html .= '<th>Name</th><th>Type</th><th>Country</th><th>Approval</th><th>View</th><th>Delete</th></tr></thead>';
-        foreach ($agreements as $agreement){
-            $approval = $agreement->approval ? 'Yes' : 'No';
+        $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th></tr></thead>';
+        foreach ($pickups as $pickup){
             $html .= '<tr>';
-            $html .= '<td>'.$agreement->name.'</td><td>'.$agreement->type.'</td>';
-            $html .= '<td>'.$agreement->country.'</td>';
-            $html .= '<td>'.$approval.'</td>';
-            $html .= '<td><a class="btn btn-sm btn-primary" href="agreement-template-view/'.$agreement->id.'"><i class="fa fa-eye"></i></a></td>';
-            $html .= '<td><button class="btn btn-sm btn-danger" onclick="deleteAgreementTemplate('.$agreement->id.')"><i class="fa fa-trash"></i></button></td>';
+            $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
+            $html .= '<td>'.$pickup->cu_city.'</td><td>'.$pickup->comments.'</td>';
+            $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
             $html .= '</tr>';
         }
         $html .= '</table></div>';
-        */
+
         return $html;
     }
 

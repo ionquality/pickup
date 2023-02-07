@@ -38,6 +38,8 @@
 
   <!-- Include Scripts -->
   @include('layouts/sections/scripts')
+  @include('panels/modal')
+  @include('panels/notification')
 
 </body>
 

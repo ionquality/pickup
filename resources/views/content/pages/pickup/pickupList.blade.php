@@ -36,6 +36,7 @@
 
 @section('vendor-script')
 {{-- Vendor js files --}}
+@include('panels.datatable')
 
 @endsection
 
@@ -50,7 +51,7 @@
 
     function getPickupList() {
       $.ajax({
-        url: '/agreement-template-index',
+        url: '/pickup-list',
         data: {
           _token: "{{csrf_token()}}"
         },
