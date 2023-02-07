@@ -145,36 +145,34 @@ class PickupController extends Controller
         return response()->json(array('msg' => $msg), 200);
     }
     /**
-     * save the agreement in the database
+     * Complete the pickup
      *
-     * Database used: agreements
+     * Database used: pickuplist
      *
-     * @group Agreements
+     * @group Pickup
      * @return JsonResponse
      */
-    public function complete(Request $request,Agreement $agreement)
+    public function complete(Pickup $pickup)
     {
-        $agreement->update(['complete' => 1, 'complete_date' => now(), 'notes' => $request->input('notes')]);
+        $pickup->update(['complete' => 'Y', 'complete_date' => now()]);
 
-        $msg = 'Agreement: '.$agreement->name.' Has Been Completed';
-        Helper::insertLog(now(), 'Agreements', $msg, 4, 'agreement-template-list');
+        $msg = 'Pickup: '.$pickup->cu_name.' Has Been Completed';
         return response()->json(array('msg' => $msg), 200);
     }
     /**
-     * delete the agreement in the database
+     * delete the pickup
      *
-     * Database used: agreements
+     * Database used: pickuplist
      *
      * @group Agreements
      * @return JsonResponse
      */
-    public function destroy(Agreement $agreement): JsonResponse
+    public function destroy(Pickup $pickup): JsonResponse
     {
-        $msg = 'Agreement : '.$agreement->name.' Has Been Deleted';
+        $pickup->update(['visible' => 'N','remove_op_id' => Auth::user()->id, 'remove_date' => now()]);
 
-        $agreement->delete();
+        $msg = 'Pickup: '.$pickup->cu_name.' Has Been Deleted';
 
-        Helper::insertLog(now(), 'Agreements', $msg, Auth::user()->id, 'agreement-template-list');
         return response()->json(array('msg' => $msg), 200);
     }
 }

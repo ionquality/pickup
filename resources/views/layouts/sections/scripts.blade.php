@@ -12,6 +12,7 @@
 <!-- END: Page Vendor JS-->
 <!-- BEGIN: Theme JS-->
 <script src="{{ asset(mix('assets/js/main.js')) }}"></script>
+<script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
 
 <!-- END: Theme JS-->
 <!-- Pricing Modal JS-->

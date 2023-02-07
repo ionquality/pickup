@@ -109,44 +109,20 @@
         }
       });
     }
-    function addSalesRepToConsultant() {
-      var form = $('#addSalesRepToConsultant')[0];
-      var formData = new FormData(form);
-      $("#modal-info").hide();
-      $("#loading_message_modal").fadeIn();
-      $.ajax({
-        type: "POST",
-        url: 'consultant-sales-rep-create',
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function (data) {
-          toastr.success(data.msg);
-          $('#utility-modal').modal('hide');
-        },
-        error: function (xhr) {// Error...
-          $.each(xhr.responseJSON.errors, function (key, value) {
-            toastr.error(value);
-          });
-        }
-      });
-    }
 
-    function deleteAgreementTemplate(agreement_template_id) {
+
+    function deletePickup(pickup_id) {
       Swal.fire({
         title: "Are you sure?",
         text: "You will not be able to recover this data",
         type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
+        showCancelButton: false,
         confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel please!",
-        buttonsStyling: true
       }).then(function (e) {
           if (e.value === true) {
             $.ajax({
               type: 'DELETE',
-              url: "/agreement-template/" + agreement_template_id,
+              url: "/pickup-delete/" + pickup_id,
               data: {
                 _token: "{{csrf_token()}}",
 
@@ -154,7 +130,48 @@
               dataType: "Json",
               success: function (data) {
                 Swal.fire("Deleted!", "Your data has been deleted.", "success");
-                getAgreementTemplateList();
+                getPickupList();
+              },
+              error: function (data) {
+                Swal.fire("NOT Deleted!", "Something blew up.", "error");
+              }
+            });
+          } else {
+            e.dismiss;
+          }
+
+        },
+        function (dismiss) {
+          if (dismiss === "cancel") {
+            Swal.fire(
+              "Cancelled",
+              "Canceled Note",
+              "error"
+            )
+          }
+        })
+    }
+
+    function completePickup(pickup_id) {
+      Swal.fire({
+        title: "Do you want to complete the pickup?",
+        text: "You cannot reverse this.",
+        type: "success",
+        confirmButtonText: "Yes, complete it!",
+        buttonsStyling: true
+      }).then(function (e) {
+          if (e.value === true) {
+            $.ajax({
+              type: 'POST',
+              url: "/pickup-complete/" + pickup_id,
+              data: {
+                _token: "{{csrf_token()}}",
+
+              },
+              dataType: "Json",
+              success: function (data) {
+                Swal.fire("Completed!", "Your pickup has been completed.", "success");
+                getPickupList();
               },
               error: function (data) {
                 Swal.fire("NOT Deleted!", "Something blew up.", "error");
