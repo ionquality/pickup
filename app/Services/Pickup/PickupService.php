@@ -31,16 +31,17 @@ class PickupService
             ->where('pickuplist.complete','N')
             ->where('pickuplist.visible','Y')->get();
         $html = '<button class="btn btn-primary mb-2" type="button" onclick="createPickupForm()">Add Pickup</button>';
-        $html .= '<div class="table-responsive"><table id="datatable" class="table">';
+        $html .= '<div class="table-responsive"><table id="datatable" class="table table-sm">';
         $html .= '<thead><tr class="table-primary">';
-        $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th><th>Delete</th><th>Complete</th></tr></thead>';
+        $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Delete</th><th>Complete</th></tr></thead>';
         foreach ($pickups as $pickup){
             $html .= '<tr>';
             $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
             $html .= '<td>'.$pickup->cu_city.'</td><td>'.$pickup->comments.'</td>';
             $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
-            $html .= '<td><button class="btn btn-danger" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
-            $html .= '<td><button class="btn btn-success" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';
+            $html .= '<td>'.Helpers::getDateTimeString($pickup->entry_date).'</td>';
+            $html .= '<td><button class="btn btn-danger btn-sm" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
+            $html .= '<td><button class="btn btn-success btn-sm" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';
             $html .= '</tr>';
         }
         $html .= '</table></div>';
@@ -62,20 +63,39 @@ class PickupService
             ->where('route_id',$route_id)
             ->where('pickuplist.complete','N')
             ->where('pickuplist.visible','Y')->get();
-        $html = '<h3>Driver '.$route_id.'</h3>';
+        $pickupNew = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->where('CUSTOMER.cu_active','Y')
+            ->where('route_id',$route_id)
+            ->where('pickuplist.notification','Y')
+            ->where('pickuplist.complete','N')
+            ->where('pickuplist.visible','Y')->exists();
+
+        $html = '<h3>Driver '.$route_id.': Open Pickups</h3>';
+        if ($pickupNew){
+            $html .= '<div class="alert alert-success" role="alert">';
+            $html .= '<h3 class="text-danger">A new pickup has been added!</h3>';
+            $html .= '<form id="pickupNotification">';
+            $html .= '<input type="hidden" name="_token" id="csrf-token" value="' . csrf_token() . '" >';
+            $html .= '<input type="hidden" name="route_id" value="'.$route_id.'">';
+            $html .= '<button type="button" class="btn btn-primary" onclick="pickupNotification()">Dismiss</button>';
+            $html .= '</form>';
+            $html .= '</div>';
+        }
         $html .= '<div class="table-responsive"><table id="datatable" class="table">';
         $html .= '<thead><tr class="table-primary">';
-        $html .= '<th>Route</th><th>Customer</th><th>Location</th><th>Comments</th><th>Pickup Date</th><th>Delete</th><th>Complete</th></tr></thead>';
+        $html .= '<th>Route</th><th>Customer</th><th>Location</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Delete</th><th>Complete</th></tr></thead>';
         foreach ($pickups as $pickup){
             $pickupCustomer = Customer::select('cu_name','cu_region','cu_address_1','cu_address_2','cu_city','cu_state','cu_zip')
                 ->where('cu_name',$pickup->cu_name)->first();
-
-            $html .= '<tr>';
+            $rowColor = $pickup->notification == 'Y' ? 'table-success' : '';
+            $html .= '<tr class="'.$rowColor.'">';
             $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
             $html .= '<td><a href="https://maps.google.com/maps?q='.Helpers::getCustomerAddress($pickupCustomer).'" target="_blank">'.Helpers::getCustomerAddress($pickupCustomer).'</a></td><td>'.$pickup->comments.'</td>';
             $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
+            $html .= '<td>'.Helpers::getDateTimeString($pickup->entry_date).'</td>';
             $html .= '<td><button class="btn btn-danger" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
-            $html .= '<td><button class="btn btn-success" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';            $html .= '</tr>';
+            $html .= '<td><button class="btn btn-success" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';
+            $html .= '</tr>';
         }
         $html .= '</table></div>';
 

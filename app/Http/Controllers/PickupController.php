@@ -25,18 +25,31 @@ class PickupController extends Controller
      */
     public function view()
     {
-        $breadcrumbs = [
-            ['link' => "home", 'name' => "Home"], ['name' => "Pickup List"]
-        ];
+
         $pageConfigs = [
             'pageHeader' => true
         ];
 
-        return view('/content/pages/pickup/pickupList', [
-            'pageConfigs' => $pageConfigs,
-            'breadcrumbs' => $breadcrumbs
-        ]);
-
+        if (Auth::user()->op_id == 50114){
+            return view('/content/pages/pickup/driver', [
+                'pageConfigs' => $pageConfigs,
+                'route_id' => '5'
+            ]);
+        } elseif (Auth::user()->op_id == 30414) {
+            return view('/content/pages/pickup/driver', [
+                'pageConfigs' => $pageConfigs,
+                'route_id' => '6'
+            ]);
+        } elseif (Auth::user()->op_id == 428142) {
+            return view('/content/pages/pickup/driver', [
+                'pageConfigs' => $pageConfigs,
+                'route_id' => '8'
+            ]);
+        } else {
+            return view('/content/pages/pickup/pickupList', [
+                'pageConfigs' => $pageConfigs,
+            ]);
+        }
     }
 
     /**
@@ -154,9 +167,26 @@ class PickupController extends Controller
      */
     public function complete(Pickup $pickup)
     {
-        $pickup->update(['complete' => 'Y', 'complete_date' => now()]);
+        $pickup->update(['complete' => 'Y', 'complete_date' => now(), 'notification' => 'N']);
+        Pickup::where('route_id',$pickup->route_id)->update(['notification' => 'N']);
 
         $msg = 'Pickup: '.$pickup->cu_name.' Has Been Completed';
+        return response()->json(array('msg' => $msg), 200);
+    }
+
+    /**
+     * Dismiss Notifications
+     *
+     * Database used: pickuplist
+     *
+     * @group Pickup
+     * @return JsonResponse
+     */
+    public function notification(Request $request)
+    {
+        Pickup::where('route_id',$request->input('route_id'))->update(['notification' => 'N']);
+
+        $msg = 'Notifications Have Been Cleared';
         return response()->json(array('msg' => $msg), 200);
     }
     /**

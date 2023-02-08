@@ -1,5 +1,7 @@
 <?php
-$route_id = request()->input('route_id');
+if (is_null($route_id)){
+    $route_id = request()->input('route_id');
+}
 
 ?>
 
@@ -48,7 +50,7 @@ $route_id = request()->input('route_id');
     window.onload = function () {
       getPickupDriverList({{$route_id}})
     };
-
+    setInterval(getPickupDriverList,60000, {{$route_id}})
     function getPickupDriverList(route_id) {
       $.ajax({
         url: '/pickup-driver',
@@ -86,7 +88,26 @@ $route_id = request()->input('route_id');
       });
     }
 
-
+    function pickupNotification() {
+      var form = $('#pickupNotification')[0];
+      var formData = new FormData(form);
+      $.ajax({
+        type: "POST",
+        url: '/pickup-notification',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+          toastr.success(data.msg);
+          getPickupDriverList()
+        },
+        error: function (xhr) {// Error...
+          $.each(xhr.responseJSON.errors, function (key, value) {
+            toastr.error(value);
+          });
+        }
+      });
+    }
 
     function createPickup() {
       var form = $('#createPickup')[0];

@@ -43,6 +43,7 @@ Route::get('/pickup-create', [PickupController::class,'create']);
 Route::get('/pickup-driver-view', [PickupController::class,'driverView']);
 Route::get('/pickup-driver', [PickupController::class,'driverIndex']);
 Route::post('/pickup-create', [PickupController::class,'store']);
+Route::post('/pickup-notification', [PickupController::class,'notification']);
 Route::post('/pickup-complete/{pickup}', [PickupController::class,'complete']);
 Route::delete('/pickup-delete/{pickup}', [PickupController::class,'destroy']);
 

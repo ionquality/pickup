@@ -27,7 +27,7 @@ class User extends Authenticatable
         'username',
         'first_name',
         'last_name',
-        'op_passnum',
+        'name',
         'op_id',
         'active',
         'email',
