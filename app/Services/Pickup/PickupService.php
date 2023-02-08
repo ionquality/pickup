@@ -72,7 +72,7 @@ class PickupService
 
             $html .= '<tr>';
             $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
-            $html .= '<td>'.Helpers::getCustomerAddress($pickupCustomer).'</td><td>'.$pickup->comments.'</td>';
+            $html .= '<td><a href="https://maps.google.com/maps?q='.Helpers::getCustomerAddress($pickupCustomer).'" target="_blank">'.Helpers::getCustomerAddress($pickupCustomer).'</a></td><td>'.$pickup->comments.'</td>';
             $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
             $html .= '<td><button class="btn btn-danger" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
             $html .= '<td><button class="btn btn-success" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';            $html .= '</tr>';

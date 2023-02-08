@@ -58,8 +58,9 @@ $route_id = request()->input('route_id');
         },
         success: function (data) {
           $('#main-info').hide().html(data).fadeIn();
-          $('#datatable').DataTable();
-        }
+          $('#datatable').DataTable( {
+            "paging": false
+          } );        }
       });
     }
     function createPickupForm(customer) {
