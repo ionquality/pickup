@@ -1,5 +1,5 @@
 <?php
-if (is_null($route_id)){
+if (!isset($route_id)){
     $route_id = request()->input('route_id');
 }
 
