@@ -60,9 +60,10 @@ if (!isset($route_id)){
         },
         success: function (data) {
           $('#main-info').hide().html(data).fadeIn();
-          $('#datatable').DataTable( {
+          $('.table').DataTable( {
             "paging": false
-          } );        }
+          } );
+        }
       });
     }
     function createPickupForm(customer) {

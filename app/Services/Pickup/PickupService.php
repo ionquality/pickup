@@ -18,19 +18,18 @@ use Illuminate\Support\Facades\Auth;
 class PickupService
 {
     /**
-     * Build List of agreement template list
+     * Build List of pickups
      *
-     * @group Consultants
+     * @group Pickups
      * @return string
      */
     public function buildPickupList(){
 
-        $pickups = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
-            ->select('CUSTOMER.cu_city','pickuplist.*')
-            ->where('CUSTOMER.cu_active','Y')
-            ->where('pickuplist.complete','N')
-            ->where('pickuplist.visible','Y')->get();
-        $html = '<button class="btn btn-primary mb-2" type="button" onclick="createPickupForm()">Add Pickup</button>';
+        $pickups = Pickup::openPickups()->get();
+        $completedPickups = Pickup::completePickupsToday()->get();
+
+        $html = '<h3>Open Pickups</h3>';
+        $html .= '<button class="btn btn-primary mb-2" type="button" onclick="createPickupForm()">Add Pickup</button>';
         $html .= '<div class="table-responsive"><table id="datatable" class="table table-sm">';
         $html .= '<thead><tr class="table-primary">';
         $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Delete</th><th>Complete</th></tr></thead>';
@@ -46,6 +45,20 @@ class PickupService
         }
         $html .= '</table></div>';
 
+        $html .= '<p class="text-primary mt-4"><b>Completed Pickups Today</b></p>';
+        $html .= '<div class="table-responsive"><table  class="table table-sm">';
+        $html .= '<thead><tr class="table-primary">';
+        $html .= '<th>Route</th><th>Customer</th><th>Comments</th><th>Complete Date</th><th>Date Added</th></tr></thead>';
+        foreach ($completedPickups as $pickup){
+            $html .= '<tr>';
+            $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
+            $html .= '<td>'.$pickup->comments.'</td>';
+            $html .= '<td>'.Helpers::getDateTimeString($pickup->complete_date).'</td>';
+            $html .= '<td>'.Helpers::getDateTimeString($pickup->entry_date).'</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table></div>';
+
         return $html;
     }
 
@@ -57,18 +70,9 @@ class PickupService
      */
     public function buildPickupDriverList($route_id){
 
-        $pickups = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
-            ->select('CUSTOMER.cu_city','pickuplist.*')
-            ->where('CUSTOMER.cu_active','Y')
-            ->where('route_id',$route_id)
-            ->where('pickuplist.complete','N')
-            ->where('pickuplist.visible','Y')->get();
-        $pickupNew = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
-            ->where('CUSTOMER.cu_active','Y')
-            ->where('route_id',$route_id)
-            ->where('pickuplist.notification','Y')
-            ->where('pickuplist.complete','N')
-            ->where('pickuplist.visible','Y')->exists();
+        $pickups = Pickup::openPickups($route_id)->get();
+        $pickupNew = Pickup::openPickups($route_id)->where('pickuplist.notification','Y')->exists();
+        $completedPickups = Pickup::completePickupsToday($route_id)->get();
 
         $html = '<h3>Driver '.$route_id.': Open Pickups</h3>';
         if ($pickupNew){
@@ -81,7 +85,7 @@ class PickupService
             $html .= '</form>';
             $html .= '</div>';
         }
-        $html .= '<div class="table-responsive"><table id="datatable" class="table">';
+        $html .= '<div class="table-responsive"><table class="table">';
         $html .= '<thead><tr class="table-primary">';
         $html .= '<th>Route</th><th>Customer</th><th>Location</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Delete</th><th>Complete</th></tr></thead>';
         foreach ($pickups as $pickup){
@@ -98,7 +102,19 @@ class PickupService
             $html .= '</tr>';
         }
         $html .= '</table></div>';
-
+        $html .= '<p class="text-primary mt-4"><b>Completed Pickups Today</b></p>';
+        $html .= '<div class="table-responsive"><table  class="table table-sm">';
+        $html .= '<thead><tr class="table-primary">';
+        $html .= '<th>Route</th><th>Customer</th><th>Comments</th><th>Complete Date</th><th>Date Added</th></tr></thead>';
+        foreach ($completedPickups as $pickup){
+            $html .= '<tr>';
+            $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
+            $html .= '<td>'.$pickup->comments.'</td>';
+            $html .= '<td>'.Helpers::getDateTimeString($pickup->complete_date).'</td>';
+            $html .= '<td>'.Helpers::getDateTimeString($pickup->entry_date).'</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table></div>';
         return $html;
     }
 

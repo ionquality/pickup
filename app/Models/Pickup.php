@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Pickup extends Model
@@ -26,4 +27,43 @@ class Pickup extends Model
         'pickup_seqno',
         'notification'
     ];
+
+    public function scopeOpenPickups($query,$route_id = null)
+    {
+        $query->join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->where('CUSTOMER.cu_active','Y');
+        if ($route_id){
+            $query->where('pickuplist.route_id',$route_id);
+        }
+        $query->where('pickuplist.complete','N')
+            ->where('pickuplist.visible','Y');
+        return $query;
+    }
+
+    public function scopeCompletePickupsToday($query,$route_id = null)
+    {
+        $query->join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->where('CUSTOMER.cu_active','Y');
+        if ($route_id){
+            $query->where('pickuplist.route_id',$route_id);
+        }
+        $query->whereDate('complete_date', Carbon::today());
+        $query->where('pickuplist.complete','Y')
+            ->where('pickuplist.visible','Y');
+        return $query;
+    }
+
+    public function scopeDeletedPickups($query,$route_id = null, $start_date, $end_date)
+    {
+        $query->join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->where('CUSTOMER.cu_active','Y');
+        if ($route_id){
+            $query->where('pickuplist.route_id',$route_id);
+        }
+        $query->where('pickuplist.visible','N');
+        return $query;
+    }
 }

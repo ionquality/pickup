@@ -57,7 +57,7 @@
         },
         success: function (data) {
           $('#main-info').hide().html(data).fadeIn();
-          $('#datatable').DataTable( {
+          $('.table').DataTable( {
             "paging": false
           } );
         }
