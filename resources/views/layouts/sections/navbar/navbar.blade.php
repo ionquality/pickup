@@ -11,6 +11,7 @@ $navbarDetached = ($navbarDetached ?? '');
   <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
     <div class="{{$containerNav}}">
       @endif
+      <span class="app-brand-text demo menu-text fw-bold text-primary">{{\App\Helpers\Helpers::getRandomGreeting()}}!</span>
 
       <!--  Brand demo (display only for navbar-full and hide on below xl) -->
       @if(isset($navbarFull))
@@ -44,7 +45,6 @@ $navbarDetached = ($navbarDetached ?? '');
         <!--/ Style Switcher -->
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
-
           <!-- User -->
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">

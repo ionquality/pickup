@@ -238,6 +238,8 @@ class PickupController extends Controller
             $html = app()->make(PickupReportService::class)->buildDeletedPickupList($request);
         } elseif ($type == 'All'){
             $html .= app()->make(PickupReportService::class)->buildAllPickupList($request);
+        } elseif ($type == 'Automatic'){
+            $html .= app()->make(PickupReportService::class)->buildAutomaticPickupList($request);
         }
         return $html;
     }

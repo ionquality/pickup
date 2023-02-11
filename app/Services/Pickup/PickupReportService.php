@@ -4,6 +4,7 @@ namespace App\Services\Pickup;
 
 
 use App\Helpers\Helpers;
+use App\Models\AutomaticPickup;
 use App\Models\Customer;
 use App\Models\Pickup;
 use Carbon\Carbon;
@@ -75,7 +76,7 @@ class PickupReportService
     public function buildAllPickupList(Request $request){
         $routes = [2,3,4,5,6,8];
         $route_id = $request->input('route_id');
-        $startDate = $request->input('startDate') ?? Carbon::now()->subYear()->toDateString();
+        $startDate = $request->input('startDate') ?? Carbon::now()->subDays(90)->toDateString();
         $endDate = $request->input('endDate') ?? Carbon::now()->toDateString();
         $complete = $request->input('complete');
         $delete = $request->input('delete');
@@ -131,7 +132,22 @@ class PickupReportService
     }
 
     public function buildAutomaticPickupList () {
+        $automaticPickups = AutomaticPickup::orderBy('cu_name')->get();
 
+        $html = '<h3>Automatic Pickups</h3>';
+        $html .= '<button class="btn btn-primary" onclick="addAutomaticPickupForm()">Add Automatic Pickup</button>';
+        $html .= '<div class="table-responsive"><table id="datatable" class="table table-sm">';
+        $html .= '<thead><tr class="table-primary table-sm">';
+        $html .= '<th>Route</th><th>Customer</th><th>Delete</th></tr></thead>';
+        foreach ($automaticPickups as $pickup){
+            $html .= '<tr>';
+            $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
+            $html .= '<td><button class="btn btn-sm btn-danger" onclick="deleteAutomaticPickup('.$pickup->id.')"><i class="fa fa-trash"></i></button></td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table></div>';
+
+        return $html;
     }
 
 

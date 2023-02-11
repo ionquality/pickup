@@ -24,7 +24,7 @@
       <div class="d-grid gap-2">
         <button class="btn btn-primary" type="button" onclick="getReport('All')">Pickup Report</button>
         <button class="btn btn-primary" type="button" onclick="getReport('Deleted')">Deleted Report</button>
-        <button class="btn btn-primary" type="button">Automatic Pickups</button>
+        <button class="btn btn-primary" type="button" onclick="getReport('Automatic')">Automatic Pickups</button>
       </div>
     </div>
     <div class="col-md-9">
@@ -60,7 +60,7 @@
 
   <script>
     window.onload = function () {
-
+      getReport('All')
     };
     $.fn.dataTable.moment('MM/DD/YYYY h:mm a');
 
@@ -106,7 +106,93 @@
         }
       });
     }
+    function addAutomaticPickupForm(customer) {
+      $('#utility-modal').modal('show');
+      $("#loading_message_modal").fadeIn();
+      $("#modal-info").hide();
+      $.ajax({
+        url: "/automatic-pickup-create/",
+        data: {
+          _token: "{{csrf_token()}}",
+          cu_name: customer
+        },
+        success: function (data) {
+          $("#loading_message_modal").fadeOut('slow', function () {
+            $("#modal-info").html(data).fadeIn();
+            $('#customer-select').on('change', function(e) {
+              var customer = $(this).val();
+              addAutomaticPickupForm(customer)
 
+            });
+          })
+        }
+      });
+    }
+
+    function createAutomaticPickup() {
+      var form = $('#createAutomaticPickup')[0];
+      var formData = new FormData(form);
+      $("#modal-info").hide();
+      $("#loading_message_modal").fadeIn();
+      $.ajax({
+        type: "POST",
+        url: '/automatic-pickup-create',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+          $('#utility-modal').modal('hide');
+          toastr.success(data.msg);
+          getReport('Automatic')
+        },
+        error: function (xhr) {// Error...
+          $.each(xhr.responseJSON.errors, function (key, value) {
+            toastr.error(value);
+          });
+        }
+      });
+    }
+
+    function deleteAutomaticPickup(pickup_id) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You will not be able to recover this data",
+        type: "warning",
+        showCancelButton: false,
+        confirmButtonText: "Yes, delete it!",
+      }).then(function (e) {
+          if (e.value === true) {
+            $.ajax({
+              type: 'DELETE',
+              url: "/automatic-pickup-delete/" + pickup_id,
+              data: {
+                _token: "{{csrf_token()}}",
+
+              },
+              dataType: "Json",
+              success: function (data) {
+                Swal.fire("Deleted!", "Your data has been deleted.", "success");
+                getReport('Automatic')
+              },
+              error: function (data) {
+                Swal.fire("NOT Deleted!", "Something blew up.", "error");
+              }
+            });
+          } else {
+            e.dismiss;
+          }
+
+        },
+        function (dismiss) {
+          if (dismiss === "cancel") {
+            Swal.fire(
+              "Cancelled",
+              "Canceled Note",
+              "error"
+            )
+          }
+        })
+    }
   </script>
 @endsection
 

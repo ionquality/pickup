@@ -5,10 +5,37 @@ namespace App\Helpers;
 use App\Models\Customer;
 use App\Models\User;
 use Config;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Helpers
 {
+    public static function getRandomGreeting()
+    {
+        $greetings = [
+            "Hello",
+            "Hola",
+            "Welcome",
+            "Hi",
+            "Bienvenidos",
+            "Greetings",
+            "What's Up",
+            "Hey there",
+            "How are you",
+            "Good Morning",
+            "Good Day",
+            "How you doing",
+            "How's it going",
+            "Good to see you",
+            "Nice to see you",
+            "Long time no see",
+        ];
+
+        $greeting = $greetings[array_rand($greetings)] . ' ' . Auth::user()->first_name;
+
+        return $greeting;
+    }
+
     public static function getDateString($date_string)
     {
         if ($date_string) {
@@ -20,15 +47,16 @@ class Helpers
         return $return_date;
 
     }
+
     public static function getUserName($user_id)
     {
         $user = User::find($user_id);
 
-        if ($user){
+        if ($user) {
             $name = $user->name;
         } else {
             $opUser = User::where('op_id', $user_id)->first();
-            if ($opUser){
+            if ($opUser) {
                 $name = $opUser->name;
             } else {
                 $name = 'N/A';
@@ -38,6 +66,7 @@ class Helpers
 
         return $name;
     }
+
     public static function getDateFullFormat($date_string)
     {
         if ($date_string) {
@@ -49,6 +78,7 @@ class Helpers
         return $return_date;
 
     }
+
     public static function getDateTimeString($date_string)
     {
 
@@ -84,6 +114,7 @@ class Helpers
         return $return_date;
 
     }
+
     public static function appClasses()
     {
 

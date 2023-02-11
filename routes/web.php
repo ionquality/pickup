@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AutomaticPickupController;
 use App\Http\Controllers\PickupController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,4 +49,9 @@ Route::post('/pickup-create', [PickupController::class,'store']);
 Route::post('/pickup-notification', [PickupController::class,'notification']);
 Route::post('/pickup-complete/{pickup}', [PickupController::class,'complete']);
 Route::delete('/pickup-delete/{pickup}', [PickupController::class,'destroy']);
+
+Route::get('/automatic-pickup-create', [AutomaticPickupController::class,'create']);
+Route::post('/automatic-pickup-create', [AutomaticPickupController::class,'store']);
+Route::delete('/automatic-pickup-delete/{pickup}', [AutomaticPickupController::class,'destroy']);
+
 
