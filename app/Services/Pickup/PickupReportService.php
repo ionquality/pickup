@@ -130,6 +130,9 @@ class PickupReportService
         return $html;
     }
 
+    public function buildAutomaticPickupList () {
+
+    }
 
 
 
