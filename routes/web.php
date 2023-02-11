@@ -38,6 +38,8 @@ Route::middleware([
 });
 
 Route::get('/pickup-list-view', [PickupController::class,'view']);
+Route::get('/pickup-report-view', [PickupController::class,'reportView']);
+Route::get('/pickup-report', [PickupController::class,'report']);
 Route::get('/pickup-list', [PickupController::class,'index']);
 Route::get('/pickup-create', [PickupController::class,'create']);
 Route::get('/pickup-driver-view', [PickupController::class,'driverView']);

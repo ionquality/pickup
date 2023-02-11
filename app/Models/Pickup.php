@@ -63,6 +63,9 @@ class Pickup extends Model
         if ($route_id){
             $query->where('pickuplist.route_id',$route_id);
         }
+        $query->whereDate('pickuplist.remove_date', '>=', $start_date);
+        $query->whereDate('pickuplist.remove_date', '<=', $end_date);
+
         $query->where('pickuplist.visible','N');
         return $query;
     }

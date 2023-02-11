@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Customer;
+use App\Models\User;
 use Config;
 use Illuminate\Support\Str;
 
@@ -19,7 +20,24 @@ class Helpers
         return $return_date;
 
     }
+    public static function getUserName($user_id)
+    {
+        $user = User::find($user_id);
 
+        if ($user){
+            $name = $user->name;
+        } else {
+            $opUser = User::where('op_id', $user_id)->first();
+            if ($opUser){
+                $name = $opUser->name;
+            } else {
+                $name = 'N/A';
+            }
+
+        }
+
+        return $name;
+    }
     public static function getDateFullFormat($date_string)
     {
         if ($date_string) {

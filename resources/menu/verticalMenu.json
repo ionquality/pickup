@@ -42,6 +42,12 @@
           "slug": "dashboard-ecommerce"
         }
       ]
+    },
+    {
+      "url": "/pickup-report-view",
+      "name": "Reports",
+      "icon": "menu-icon tf-icons ti ti-report-analytics",
+      "slug": "pages-report"
     }
   ]
 }

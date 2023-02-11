@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Pickup;
+use App\Services\Pickup\PickupReportService;
 use App\Services\Pickup\PickupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,7 +46,13 @@ class PickupController extends Controller
                 'pageConfigs' => $pageConfigs,
                 'route_id' => '8'
             ]);
-        } else {
+        } elseif (Auth::user()->op_id == 30514) {
+            return view('/content/pages/pickup/driver', [
+                'pageConfigs' => $pageConfigs,
+                'route_id' => '3'
+            ]);
+        }
+        else {
             return view('/content/pages/pickup/pickupList', [
                 'pageConfigs' => $pageConfigs,
             ]);
@@ -75,17 +82,27 @@ class PickupController extends Controller
         ]);
 
     }
+
     /**
-     * Show the agreement
+     * Show the report view
      *
-     * Database used: agreements
+     * Database used: pickuplist
      *
      * @group Agreements
-     * @return void
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show(Agreement $agreement) {
-        return app()->make(AgreementService::class)->buildAgreementView($agreement);
+    public function reportView()
+    {
+        $pageConfigs = [
+            'pageHeader' => true
+        ];
+
+        return view('/content/pages/pickup/report', [
+            'pageConfigs' => $pageConfigs
+        ]);
+
     }
+
 
     /**
      * Show the list of agreements for a consultant
@@ -204,5 +221,22 @@ class PickupController extends Controller
         $msg = 'Pickup: '.$pickup->cu_name.' Has Been Deleted';
 
         return response()->json(array('msg' => $msg), 200);
+    }
+
+    /**
+     * Build Report Views
+     *
+     * Database used: pickuplist
+     *
+     * @group Pickups
+     * @return void
+     */
+    public function report(Request $request) {
+        $type = $request->input('type');
+        $html = '';
+        if ($type == 'Deleted'){
+            $html = app()->make(PickupReportService::class)->buildDeletedPickupList($request);
+        }
+        return $html;
     }
 }
