@@ -69,4 +69,23 @@ class Pickup extends Model
         $query->where('pickuplist.visible','N');
         return $query;
     }
+
+    public function scopeAllPickups($query,$route_id, $start_date, $end_date, $complete, $delete)
+    {
+        $query->join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->where('CUSTOMER.cu_active','Y');
+        if ($route_id){
+            $query->where('pickuplist.route_id',$route_id);
+        }
+        $query->whereDate('pickuplist.entry_date', '>=', $start_date);
+        $query->whereDate('pickuplist.entry_date', '<=', $end_date);
+        if ($complete){
+            $query->where('pickuplist.complete','Y');
+        }
+        if ($delete){
+            $query->where('pickuplist.visible','N');
+        }
+        return $query;
+    }
 }
