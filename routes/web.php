@@ -52,6 +52,7 @@ Route::delete('/pickup-delete/{pickup}', [PickupController::class,'destroy']);
 
 Route::get('/automatic-pickup-create', [AutomaticPickupController::class,'create']);
 Route::post('/automatic-pickup-create', [AutomaticPickupController::class,'store']);
+Route::post('/automatic-pickup-deploy', [AutomaticPickupController::class,'deploy']);
 Route::delete('/automatic-pickup-delete/{pickup}', [AutomaticPickupController::class,'destroy']);
 
 

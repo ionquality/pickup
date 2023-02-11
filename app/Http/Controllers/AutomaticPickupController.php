@@ -67,6 +67,21 @@ class AutomaticPickupController extends Controller
     }
 
     /**
+     * add automatic pickups to pickup list
+     *
+     * Database used: AUTO_PICKUPLIST
+     *
+     * @group Pickups
+     * @return JsonResponse
+     */
+    public function deploy(Request $request): JsonResponse
+    {
+        $pickup = app()->make(PickupReportService::class)->addAutomaticPickupsToPickupList();
+
+        $msg = 'Automatic Pickups Have Been Added';
+        return response()->json(array('msg' => $msg), 200);
+    }
+    /**
      * delete the automatic pickup
      *
      * Database used: AUTO_PICKUPLIST

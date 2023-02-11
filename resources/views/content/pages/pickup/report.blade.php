@@ -193,6 +193,47 @@
           }
         })
     }
+
+    function addAutomaticPickups() {
+      Swal.fire({
+        title: "Add Automatic Pickups to pickup list?",
+        text: "You cannot undo this",
+        type: "success",
+        showCancelButton: false,
+        confirmButtonText: "Yes!",
+      }).then(function (e) {
+          if (e.value === true) {
+            $.ajax({
+              type: 'POST',
+              url: "/automatic-pickup-deploy/",
+              data: {
+                _token: "{{csrf_token()}}",
+
+              },
+              dataType: "Json",
+              success: function (data) {
+                Swal.fire("Success!", "Pickups have been added.", "success");
+                getReport('Automatic')
+              },
+              error: function (data) {
+                Swal.fire("NOT Completed!", "Something blew up.", "error");
+              }
+            });
+          } else {
+            e.dismiss;
+          }
+
+        },
+        function (dismiss) {
+          if (dismiss === "cancel") {
+            Swal.fire(
+              "Cancelled",
+              "Canceled Note",
+              "error"
+            )
+          }
+        })
+    }
   </script>
 @endsection
 

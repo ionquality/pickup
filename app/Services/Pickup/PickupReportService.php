@@ -2,14 +2,11 @@
 
 namespace App\Services\Pickup;
 
-
 use App\Helpers\Helpers;
 use App\Models\AutomaticPickup;
-use App\Models\Customer;
 use App\Models\Pickup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @group Pickups
@@ -136,6 +133,7 @@ class PickupReportService
 
         $html = '<h3>Automatic Pickups</h3>';
         $html .= '<button class="btn btn-primary" onclick="addAutomaticPickupForm()">Add Automatic Pickup</button>';
+        $html .= '<button class="btn btn-info ms-3" onclick="addAutomaticPickups()">Add Pickups To Today\'s List</button>';
         $html .= '<div class="table-responsive"><table id="datatable" class="table table-sm">';
         $html .= '<thead><tr class="table-primary table-sm">';
         $html .= '<th>Route</th><th>Customer</th><th>Delete</th></tr></thead>';
@@ -148,6 +146,35 @@ class PickupReportService
         $html .= '</table></div>';
 
         return $html;
+    }
+
+    public function addAutomaticPickupsToPickupList (){
+        $automaticPickups = AutomaticPickup::orderBy('cu_name')->get();
+
+        foreach ($automaticPickups as $pickup){
+            $count = Pickup::count();
+            $count ++;
+            $pickup_seq = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
+                ->where('CUSTOMER.cu_active','Y')
+                ->where('pickuplist.complete','N')
+                ->where('pickuplist.visible','Y')
+                ->where('pickuplist.route_id', $pickup->route_id)
+                ->count();
+            $pickup_seq++;
+            Pickup::create([
+                'cu_name' => $pickup->cu_name,
+                'comments' => 'Automatic Pickup',
+                'route_id' => $pickup->route_id,
+                'entry_date' => now(),
+                'pickup_date' => Carbon::now()->toDateString(),
+                'op_id' => '102612',
+                'complete' => 'N',
+                'visible' => 'Y',
+                'seqno' => $count,
+                'pickup_seqno' => $pickup_seq,
+                'notification' => 'N'
+            ]);
+        }
     }
 
 
