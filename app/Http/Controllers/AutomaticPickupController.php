@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Jobs\AddAutomaticPickups;
 use App\Models\AutomaticPickup;
 use App\Services\Pickup\PickupReportService;
 use App\Services\Pickup\PickupService;
@@ -76,8 +77,8 @@ class AutomaticPickupController extends Controller
      */
     public function deploy(Request $request): JsonResponse
     {
-        $pickup = app()->make(PickupReportService::class)->addAutomaticPickupsToPickupList();
-
+        //$pickup = app()->make(PickupReportService::class)->addAutomaticPickupsToPickupList();
+        AddAutomaticPickups::dispatch();
         $msg = 'Automatic Pickups Have Been Added';
         return response()->json(array('msg' => $msg), 200);
     }
