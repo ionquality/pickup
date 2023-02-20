@@ -8,7 +8,7 @@ $configData = Helper::appClasses();
   @if(!isset($navbarFull))
   <div class="app-brand demo">
     <a href="{{url('/')}}" class="app-brand-link">
-        <img src="ast-logo-2.png" style="height:55px; width: 55px">
+        <img src="/ast-logo-2.png" style="height:55px; width: 55px">
       <span class="app-brand-text demo menu-text fw-bold">{{config('variables.templateName')}}</span>
     </a>
 

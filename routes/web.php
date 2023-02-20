@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AutomaticPickupController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PickupController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,5 +58,10 @@ Route::get('/automatic-pickup-create', [AutomaticPickupController::class,'create
 Route::post('/automatic-pickup-create', [AutomaticPickupController::class,'store']);
 Route::post('/automatic-pickup-deploy', [AutomaticPickupController::class,'deploy']);
 Route::delete('/automatic-pickup-delete/{pickup}', [AutomaticPickupController::class,'destroy']);
+
+Route::get('/user-view/{user}', [UserController::class,'view']);
+Route::get('/user-avatar/{user}', [UserController::class,'avatar']);
+Route::post('/user/{user}', [UserController::class,'update']);
+
 
 
