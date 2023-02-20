@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new AddAutomaticPickups())->weekdays()->at('1:00');
+        $schedule->job(new AddAutomaticPickups())->weekdays();
     }
 
     /**
