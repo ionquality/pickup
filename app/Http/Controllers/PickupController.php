@@ -140,6 +140,17 @@ class PickupController extends Controller
         return app()->make(PickupService::class)->buildPickupCreateForm($cu_name);
     }
 
+    /**
+     * Show the pickup edit form
+     *
+     * Database used: pickuplist
+     *
+     * @group Pickups
+     * @return void
+     */
+    public function edit(Pickup $pickup) {
+        return app()->make(PickupService::class)->buildPickupEditForm($pickup);
+    }
 
     /**
      * save the pickup in the database
@@ -176,35 +187,22 @@ class PickupController extends Controller
     }
 
     /**
-     * save the pickup in the database
+     * uodate the pickup in the database
      *
      * Database used: pickuplist
      *
      * @group Pickups
      * @return JsonResponse
      */
-    public function update(Request $request): JsonResponse
+    public function update(Pickup $pickup,Request $request): JsonResponse
     {
         $request->validate([
-            'cu_name' => 'required',
-            'route_id' => 'required',
             'pickup_date' => 'required',
         ]);
-        $count = Pickup::count();
-        $count ++;
-        $pickup_seq = Pickup::join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
-            ->where('CUSTOMER.cu_active','Y')
-            ->where('pickuplist.complete','N')
-            ->where('pickuplist.visible','Y')
-            ->where('pickuplist.route_id', $request->input('route_id'))
-            ->count();
-        $pickup_seq++;
-        $request["seqno"] = $count;
-        $request["pickup_seqno"] = $pickup_seq;
-        $pickup = Pickup::create($request->all());
 
+        $pickup->update($request->all());
 
-        $msg = 'Customer: '.$pickup->cu_name.' Has Been Added To Pickup List';
+        $msg = 'Customer: '.$pickup->cu_name.' Has Been Updated In The Pickup List';
         //Helper::insertLog(now(), 'Agreements', $msg, Auth::user()->id, 'agreement-template-list');
         return response()->json(array('msg' => $msg), 200);
     }

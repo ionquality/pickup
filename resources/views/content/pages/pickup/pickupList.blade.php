@@ -111,6 +111,45 @@
         }
       });
     }
+    function editPickupForm(pickup_id) {
+      $('#utility-modal').modal('show');
+      $("#loading_message_modal").fadeIn();
+      $("#modal-info").hide();
+      $.ajax({
+        url: "/pickup-edit/" + pickup_id,
+        data: {
+          _token: "{{csrf_token()}}",
+        },
+        success: function (data) {
+          $("#loading_message_modal").fadeOut('slow', function () {
+            $("#modal-info").html(data).fadeIn();
+          })
+        }
+      });
+    }
+    function editPickup(pickup_id) {
+      var form = $('#editPickup')[0];
+      var formData = new FormData(form);
+      $("#modal-info").hide();
+      $("#loading_message_modal").fadeIn();
+      $.ajax({
+        type: "POST",
+        url: '/pickup-edit/' + pickup_id,
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+          $('#utility-modal').modal('hide');
+          toastr.success(data.msg);
+          getPickupList()
+        },
+        error: function (xhr) {// Error...
+          $.each(xhr.responseJSON.errors, function (key, value) {
+            toastr.error(value);
+          });
+        }
+      });
+    }
 
 
     function deletePickup(pickup_id) {
