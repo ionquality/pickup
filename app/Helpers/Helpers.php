@@ -54,10 +54,16 @@ class Helpers
 
         if ($user) {
             $name = $user->name;
+            if ($user->op_id == '102612'){
+                $name = 'System Admin';
+            }
         } else {
             $opUser = User::where('op_id', $user_id)->first();
             if ($opUser) {
                 $name = $opUser->name;
+                if ($opUser->op_id == '102612'){
+                    $name = 'System Admin';
+                }
             } else {
                 $name = 'N/A';
             }
@@ -66,7 +72,34 @@ class Helpers
 
         return $name;
     }
+    public static function getOpName($op_id)
+    {
 
+        $opUser = User::where('op_id', $op_id)->first();
+        if ($opUser) {
+            $name = $opUser->name;
+            if ($op_id == '102612'){
+                $name = 'System Admin';
+            }
+        } else {
+            $name = 'N/A';
+        }
+
+        return $name;
+    }
+    public static function getOpPicture($op_id)
+    {
+
+        $opUser = User::where('op_id', $op_id)->first();
+        if ($opUser) {
+            $image = $opUser->profile_photo_url ?? asset('assets/img/avatars/1.png');
+        } else {
+            $image = asset('assets/img/avatars/1.png');
+        }
+        $html = '<img src="'.$image.'" style="height:25px" class="rounded-circle">';
+
+        return $html;
+    }
     public static function getDateFullFormat($date_string)
     {
         if ($date_string) {

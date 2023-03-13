@@ -32,13 +32,14 @@ class PickupService
         $html .= '<button class="btn btn-primary mb-2" type="button" onclick="createPickupForm()">Add Pickup</button>';
         $html .= '<div class="table-responsive"><table id="datatable" class="table table-sm">';
         $html .= '<thead><tr class="table-primary">';
-        $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Edit</th><th>Delete</th><th>Complete</th></tr></thead>';
+        $html .= '<th>Route</th><th>Customer</th><th>City</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Added By</th><th>Edit</th><th>Delete</th><th>Complete</th></tr></thead>';
         foreach ($pickups as $pickup){
             $html .= '<tr>';
             $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
             $html .= '<td>'.$pickup->cu_city.'</td><td>'.$pickup->comments.'</td>';
             $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
             $html .= '<td>'.Helpers::getDateTimeString($pickup->entry_date).'</td>';
+            $html .= '<td>'.Helpers::getOpPicture($pickup->op_id).' '.Helpers::getUserName($pickup->op_id).'</td>';
             $html .= '<td><button class="btn btn-warning btn-sm" onclick="editPickupForm('.$pickup->pickup_id.')"><i class="fa fa-edit"></i></button></td>';
             $html .= '<td><button class="btn btn-danger btn-sm" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
             $html .= '<td><button class="btn btn-success btn-sm" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';
