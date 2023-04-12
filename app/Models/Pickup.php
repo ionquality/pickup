@@ -31,7 +31,7 @@ class Pickup extends Model
     public function scopeOpenPickups($query,$route_id = null)
     {
         $query->join('CUSTOMER','pickuplist.cu_name','=','CUSTOMER.cu_name')
-            ->select('CUSTOMER.cu_city','pickuplist.*')
+            ->select('CUSTOMER.cu_city', 'CUSTOMER.cu_phone_no','pickuplist.*')
             ->where('CUSTOMER.cu_active','Y');
         if ($route_id){
             $query->where('pickuplist.route_id',$route_id);

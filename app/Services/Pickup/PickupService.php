@@ -89,18 +89,21 @@ class PickupService
         }
         $html .= '<div class="table-responsive"><table class="table">';
         $html .= '<thead><tr class="table-primary">';
-        $html .= '<th>Route</th><th>Customer</th><th>Location</th><th>Comments</th><th>Pickup Date</th><th>Date Added</th><th>Delete</th><th>Complete</th></tr></thead>';
+        $html .= '<th>Route</th><th>Customer</th><th>Location</th><th>Phone Number</th><th>Comments</th><th>Added By</th><th>Pickup Date</th><th>Date Added</th><th>Delete</th><th>Complete</th></tr></thead>';
         foreach ($pickups as $pickup){
             $pickupCustomer = Customer::select('cu_name','cu_region','cu_address_1','cu_address_2','cu_city','cu_state','cu_zip')
                 ->where('cu_name',$pickup->cu_name)->first();
             $rowColor = $pickup->notification == 'Y' ? 'table-success' : '';
             $html .= '<tr class="'.$rowColor.'">';
             $html .= '<td>'.$pickup->route_id.'</td><td>'.$pickup->cu_name.'</td>';
-            $html .= '<td><a href="https://maps.google.com/maps?q='.Helpers::getCustomerAddress($pickupCustomer).'" target="_blank">'.Helpers::getCustomerAddress($pickupCustomer).'</a></td><td>'.$pickup->comments.'</td>';
+            $html .= '<td><a href="https://maps.google.com/maps?q='.Helpers::getCustomerAddress($pickupCustomer).'" target="_blank">'.Helpers::getCustomerAddress($pickupCustomer).'</a></td>';
+            $html .= '<td>'.$pickup->cu_phone_no.'</td>';
+            $html .= '<td>'.$pickup->comments.'</td>';
+            $html .= '<td>'.Helpers::getOpPicture($pickup->op_id).' '.Helpers::getUserName($pickup->op_id).'</td>';
             $html .= '<td>'.Helpers::getDateString($pickup->pickup_date).'</td>';
             $html .= '<td>'.Helpers::getDateTimeString($pickup->entry_date).'</td>';
-            $html .= '<td><button class="btn btn-danger" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
-            $html .= '<td><button class="btn btn-success" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';
+            $html .= '<td><button class="btn btn-danger btn-sm" onclick="deletePickup('.$pickup->pickup_id.')"><i class="fa fa-trash"></i></button></td>';
+            $html .= '<td><button class="btn btn-success btn-sm" onclick="completePickup('.$pickup->pickup_id.')"><i class="fa fa-check"></i></button></td>';
             $html .= '</tr>';
         }
         $html .= '</table></div>';
