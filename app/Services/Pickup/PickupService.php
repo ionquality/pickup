@@ -184,6 +184,7 @@ class PickupService
      * @return string
      */
     public function buildPickupEditForm(Pickup $pickup){
+        $routes = ["2", "3", "4", "5", "6" , "8"];
 
         $html = '<h3 class="text-primary">Edit Pickup</h3>';
         $html .= '<form id="editPickup">';
@@ -191,7 +192,14 @@ class PickupService
         if ($pickup){
             $html .= '<p>Customer: '.$pickup->cu_name.'</p>';
             $html .= '<p>Route: '.$pickup->route_id.'</p>';
+
         }
+        $html .= '<div class="mb-2"><label>Route</label><select class="form-control" name="route_id">';
+        $html .= '<option>'.$pickup->route_id.'</option>';
+        foreach ($routes as $route){
+            $html .= '<option>'.$route.'</option>';
+        }
+        $html .= '</select></div>';
         $html .= '<div class="mb-2"><label>Pickup Date</label><input type="date" class="form-control" name="pickup_date" value="'.$pickup->pickup_date.'"></div>';
         $html .= '<div class="mb-2"><label>Comments</label><textarea class="form-control" name="comments">'.$pickup->comments.'</textarea></div>';
 
